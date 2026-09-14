@@ -16,13 +16,33 @@
 
     <?php include_once('header.php'); ?>
 
+
    <?php
     if ((!isset($_POST['email']) || !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) || (!isset($_POST['message']) || empty($_POST['message'])))
     {
         echo('Il faut un email et un message valides pour soumettre le formulaire.');
         return;
     }
-?>
+    ?>
+
+     <?php
+    // Testons si le fichier a bien ØtØ envoyØ et s’il n’y a pas d’erreur
+    if (isset($_FILES['screenshot']) && $_FILES['screenshot']['error'] == 0)
+    {
+        if ($_FILES['screenshot']['size'] <= 1000000)
+        {
+            $fileInfo = pathinfo($_FILES['screenshot']['name']);
+            $extension = $fileInfo['extension'];
+            $allowedExtensions = ['jpg', 'jpeg', 'gif', 'png'];
+            if (in_array($extension, $allowedExtensions))
+            {
+                move_uploaded_file($_FILES['screenshot']['tmp_name'],
+                basename($_FILES['screenshot']['name']));
+                echo "L'envoi a bien été effectué !";
+            }
+        }
+    }
+    ?>
 
         <h1>Message bien reu !</h1>
         <div class="card">
